@@ -1,9 +1,19 @@
-FROM ubuntu:latest
-MAINTAINER potapova.ma
-RUN apt-get update -y
-RUN apt-get install -y python-pip python-dev build-essential
-COPY . /service
-WORKDIR /service
-RUN pip install -r requirements.txt
-ENTRYPOINT ["python"]
-CMD ["service.py"]
+FROM python:3.9-slim-buster
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements.txt to container
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code to container
+COPY . .
+
+# Expose port 8000
+EXPOSE 8000
+
+# Run application
+CMD ["python", "service.py"]
