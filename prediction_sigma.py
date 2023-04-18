@@ -25,6 +25,35 @@ def make_data(file):
     df = df.drop(['Date', 'PAY_DATE', 'CNT'], axis=1)
     return df
 
+def most_payment_day_of_week(data_frame):
+    """
+    Getting most payment day of week during all the period
+    data_frame is dataset from DB
+    return sum of points for every day of weeks
+    """
+    data_frame['Date'] = pd.to_datetime(data_frame['PAY_DATE'], format='%Y-%m-%d')
+    data_frame = data_frame.sort_values(by='Date')
+    data_frame = data_frame.set_index(pd.DatetimeIndex(data_frame['Date']))
+    data_frame = data_frame.drop(['Date', 'PAY_DATE'], axis=1)
+    dff = data_frame
+
+    dff['Month'] = dff.index.month
+    dff['Year'] = dff.index.year
+    dff['WeekDay'] = dff.index.day_of_week
+    idx = dff.groupby(['Month', 'Year'])['PAY'].transform(max) == dff['PAY']
+    values = data_frame[idx].WeekDay.values
+    values_new = []
+    for i in range(7):
+        count = 0
+        for j in range(len(values)):
+            if values[j] == i:
+                count += 1
+        values_new.append(count)
+
+    return values_new
+    # fig = px.histogram(df[idx].WeekDay.values)
+    # fig.show()
+
 def mape(y_true, y_pred):
     y_true, y_pred = np.array(y_true), np.array(y_pred)
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
