@@ -24,6 +24,3 @@ jobs:
     - name: Run Tests unittest
       run:
         python -m unittest -v tests.py
-    - name: Run Tests pytest
-      run:
-        pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
